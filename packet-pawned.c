@@ -28,7 +28,7 @@
 #include <epan/prefs.h>
 
 #define PROTO_TAG_PAWNED			"PAWNED"
-#define TCP_PORT_PAWNED				6667
+#define TCP_PORT_PAWNED				6665
 #define FRAME_HEADER_LEN			1
 
 #define USER_ROOM_JOIN				1

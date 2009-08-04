@@ -679,9 +679,11 @@ void proto_register_pawned(void)
 		&ett_pawned_requests
 	};
 
-	proto_pawned = proto_register_protocol ("Pawned Protocol", PROTO_TAG_PAWNED, "pawned");
-	proto_register_field_array (proto_pawned, hf, array_length (hf));
-	proto_register_subtree_array (ett, array_length (ett));
+	proto_pawned = proto_register_protocol("Pawned Protocol", PROTO_TAG_PAWNED, "pawned");
+	proto_register_field_array(proto_pawned, hf, array_length (hf));
+	proto_register_subtree_array(ett, array_length (ett));
+
+	register_dissector("pawned", dissect_pawned, proto_pawned);
 }
 
 void proto_reg_handoff_pawned(void)

@@ -37,6 +37,7 @@
 #define USER_ROOM_CHANGE_NAME		4
 #define USER_ROOM_UPDATE_USER		5
 #define USER_ROOM_UPDATE_SLOT		6
+#define USER_ROOM_CHANGE_PASS		7
 
 #define USER_SLOT_CREATE			10
 #define USER_SLOT_DELETE			11
@@ -61,6 +62,7 @@ static const value_string PacketActionNames[] = {
 	{ USER_ROOM_CHANGE_NAME,		"USER_ROOM_CHANGE_NAME"			},
 	{ USER_ROOM_UPDATE_USER,		"USER_ROOM_UPDATE_USER"			},
 	{ USER_ROOM_UPDATE_SLOT,		"USER_ROOM_UPDATE_SLOT"			},
+	{ USER_ROOM_CHANGE_PASS,		"USER_ROOM_CHANGE_PASS"			},
 
 	{ USER_SLOT_CREATE,				"USER_SLOT_CREATE"				},
 	{ USER_SLOT_DELETE,				"USER_SLOT_DELETE"				},
@@ -93,6 +95,7 @@ static const value_guint PacketActionRequestLength[] = {
 	{ USER_ROOM_CHANGE_NAME,		37		},
 	{ USER_ROOM_UPDATE_USER,		5		},
 	{ USER_ROOM_UPDATE_SLOT,		5		},
+	{ USER_ROOM_CHANGE_PASS,		69		},
   
 	{ USER_SLOT_CREATE,				6		},
 	{ USER_SLOT_DELETE,				6		},
@@ -114,6 +117,7 @@ static const value_guint PacketActionRequestLength[] = {
 static const value_guint PacketActionResponseLength[] = {
 	{ USER_ROOM_JOIN,				9		},
 	{ USER_ROOM_SEND_MESSAGE,		294		},
+	{ USER_ROOM_CHANGE_PASS,		9		},
 
 	{ USER_ROOM_UPDATE_USER,		39		},
 	{ USER_ROOM_UPDATE_SLOT,		463		},
@@ -148,9 +152,7 @@ static gint hf_pawned_messageString = -1;
 static gint hf_pawned_commentString = -1;
 static gint hf_pawned_skillCode = -1;
 static gint hf_pawned_templateCode = -1;
-static gint hf_pawned_equipmentCode1 = -1;
-static gint hf_pawned_equipmentCode2 = -1;
-static gint hf_pawned_equipmentCode3 = -1;
+static gint hf_pawned_equipmentCode = -1;
 static gint hf_pawned_channels = -1;
 static gint hf_pawned_users = -1;
 static gint hf_pawned_frames = -1;
@@ -174,9 +176,7 @@ static gint ett_pawned_messageString = -1;
 static gint ett_pawned_commentString = -1;
 static gint ett_pawned_skillCode = -1;
 static gint ett_pawned_templateCode = -1;
-static gint ett_pawned_equipmentCode1 = -1;
-static gint ett_pawned_equipmentCode2 = -1;
-static gint ett_pawned_equipmentCode3 = -1;
+static gint ett_pawned_equipmentCode = -1;
 static gint ett_pawned_channels = -1;
 static gint ett_pawned_users = -1;
 static gint ett_pawned_frames = -1;
@@ -233,6 +233,17 @@ static guint32 dissect_pawned_request(proto_tree *pawned_tree, tvbuff_t *tvb, gu
 		case USER_ROOM_UPDATE_SLOT:
 			proto_tree_add_item(pawned_tree, hf_pawned_room, tvb, offset, 4, TRUE);
 			offset += 4;
+		break;
+
+		case USER_ROOM_CHANGE_PASS:
+			proto_tree_add_item(pawned_tree, hf_pawned_room, tvb, offset, 4, TRUE);
+			offset += 4;
+
+			proto_tree_add_item(pawned_tree, hf_pawned_passString, tvb, offset, 32, FALSE);
+			offset += 32;
+
+			proto_tree_add_item(pawned_tree, hf_pawned_passString, tvb, offset, 32, FALSE);
+			offset += 32;
 		break;
 
 		case USER_SLOT_CREATE:
@@ -297,13 +308,13 @@ static guint32 dissect_pawned_request(proto_tree *pawned_tree, tvbuff_t *tvb, gu
 			proto_tree_add_item(pawned_tree, hf_pawned_templateCode, tvb, offset, 47, FALSE);
 			offset += 47;
 
-			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode1, tvb, offset, 17, FALSE);
+			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode, tvb, offset, 17, FALSE);
 			offset += 17;
 
-			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode2, tvb, offset, 17, FALSE);
+			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode, tvb, offset, 17, FALSE);
 			offset += 17;
 
-			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode3, tvb, offset, 17, FALSE);
+			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode, tvb, offset, 17, FALSE);
 			offset += 17;
 
 			proto_tree_add_item(pawned_tree, hf_pawned_userString, tvb, offset, 32, FALSE);
@@ -345,13 +356,13 @@ static guint32 dissect_pawned_request(proto_tree *pawned_tree, tvbuff_t *tvb, gu
 			proto_tree_add_item(pawned_tree, hf_pawned_slot, tvb, offset, 1, FALSE);
 			offset += 1;
 
-			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode1, tvb, offset, 17, FALSE);
+			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode, tvb, offset, 17, FALSE);
 			offset += 17;
 
-			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode2, tvb, offset, 17, FALSE);
+			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode, tvb, offset, 17, FALSE);
 			offset += 17;
 
-			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode3, tvb, offset, 17, FALSE);
+			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode, tvb, offset, 17, FALSE);
 			offset += 17;
 		break;
 
@@ -427,6 +438,14 @@ static guint32 dissect_pawned_response(proto_tree *pawned_tree, tvbuff_t *tvb, g
 			offset += 256;
 		break;
 
+		case USER_ROOM_CHANGE_PASS:
+			proto_tree_add_item(pawned_tree, hf_pawned_room, tvb, offset, 4, TRUE);
+			offset += 4;
+
+			proto_tree_add_item(pawned_tree, hf_pawned_result, tvb, offset, 4, TRUE);
+			offset += 4;
+		break;
+
 		case USER_ROOM_UPDATE_USER:
 			proto_tree_add_item(pawned_tree, hf_pawned_room, tvb, offset, 4, TRUE);
 			offset += 4;
@@ -463,13 +482,13 @@ static guint32 dissect_pawned_response(proto_tree *pawned_tree, tvbuff_t *tvb, g
 			proto_tree_add_item(pawned_tree, hf_pawned_templateCode, tvb, offset, 47, FALSE);
 			offset += 47;
 
-			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode1, tvb, offset, 17, FALSE);
+			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode, tvb, offset, 17, FALSE);
 			offset += 17;
 
-			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode2, tvb, offset, 17, FALSE);
+			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode, tvb, offset, 17, FALSE);
 			offset += 17;
 
-			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode3, tvb, offset, 17, FALSE);
+			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode, tvb, offset, 17, FALSE);
 			offset += 17;
 
 			proto_tree_add_item(pawned_tree, hf_pawned_messageString, tvb, offset, 256, FALSE);
@@ -630,14 +649,8 @@ void proto_register_pawned(void)
 		{ &hf_pawned_templateCode,
 			{ "Template String", "pawned.templateCode", FT_STRING, BASE_NONE, NULL, 0x0, "Template", HFILL }
 		},
-		{ &hf_pawned_equipmentCode1,
-			{ "Equipment String 1", "pawned.equipmentCode1", FT_STRING, BASE_NONE, NULL, 0x0, "Equipment 1", HFILL }
-		},
-		{ &hf_pawned_equipmentCode2,
-			{ "Equipment String 2", "pawned.equipmentCode2", FT_STRING, BASE_NONE, NULL, 0x0, "Equipment 2", HFILL }
-		},
-		{ &hf_pawned_equipmentCode3,
-			{ "Equipment String 3", "pawned.equipmentCode3", FT_STRING, BASE_NONE, NULL, 0x0, "Equipment 3", HFILL }
+		{ &hf_pawned_equipmentCode,
+			{ "Equipment String", "pawned.equipmentCode", FT_STRING, BASE_NONE, NULL, 0x0, "Equipment", HFILL }
 		},
 		{ &hf_pawned_channels,
 			{ "Channels", "pawned.channels", FT_UINT32, BASE_DEC, NULL, 0x0, "Channel", HFILL }
@@ -670,9 +683,7 @@ void proto_register_pawned(void)
 		&ett_pawned_commentString,
 		&ett_pawned_skillCode,
 		&ett_pawned_templateCode,
-		&ett_pawned_equipmentCode1,
-		&ett_pawned_equipmentCode2,
-		&ett_pawned_equipmentCode3,
+		&ett_pawned_equipmentCode,
 		&ett_pawned_channels,
 		&ett_pawned_users,
 		&ett_pawned_frames,

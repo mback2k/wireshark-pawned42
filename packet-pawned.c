@@ -530,15 +530,15 @@ static guint32 dissect_pawned_response(proto_tree *pawned_tree, tvbuff_t *tvb, g
 
 static guint get_pawned_message_len(packet_info *pinfo, tvbuff_t *tvb, int offset)
 {
-	guint8 action = tvb_get_guint8(tvb, 0);
-
+	guint8 action = tvb_get_guint8(tvb, offset);
 	guint32 i;
+
 	if (pinfo->match_port == pinfo->destport || TCP_PORT_PAWNED == pinfo->destport) {
-		for (i=0; i<sizeof(PacketActionRequestLength); i++)
+		for (i = 0; i < sizeof(PacketActionRequestLength); i++)
 			if (PacketActionRequestLength[i].value == action)
 				return PacketActionRequestLength[i].guint;
 	} else {
-		for (i=0; i<sizeof(PacketActionResponseLength); i++)
+		for (i = 0; i < sizeof(PacketActionResponseLength); i++)
 			if (PacketActionResponseLength[i].value == action)
 				return PacketActionResponseLength[i].guint;
 	}

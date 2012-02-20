@@ -23,9 +23,9 @@
 #include <string.h>
 #include <glib.h>
 #include <epan/packet.h>
+#include <epan/prefs.h>
 #include <epan/emem.h>
 #include <epan/dissectors/packet-tcp.h>
-#include <epan/prefs.h>
 
 #define PROTO_TAG_PAWNED			"PAWNED"
 #define TCP_PORT_PAWNED				6665
@@ -135,7 +135,7 @@ static int proto_pawned = -1;
 */
 
 /** Kts attempt at defining the protocol */
-static gint hf_pawned = -1;
+static gint hf_pawned_data = -1;
 static gint hf_pawned_action = -1;
 static gint hf_pawned_result = -1;
 static gint hf_pawned_room = -1;
@@ -160,27 +160,6 @@ static gint hf_pawned_requests = -1;
 
 /* These are the ids of the subtrees that we may be creating */
 static gint ett_pawned = -1;
-static gint ett_pawned_action = -1;
-static gint ett_pawned_result = -1;
-static gint ett_pawned_room = -1;
-static gint ett_pawned_user = -1;
-static gint ett_pawned_userCount = -1;
-static gint ett_pawned_slot = -1;
-static gint ett_pawned_slotCount = -1;
-static gint ett_pawned_slotTarget = -1;
-static gint ett_pawned_roomString = -1;
-static gint ett_pawned_userString = -1;
-static gint ett_pawned_passString = -1;
-static gint ett_pawned_dataString = -1;
-static gint ett_pawned_messageString = -1;
-static gint ett_pawned_commentString = -1;
-static gint ett_pawned_skillCode = -1;
-static gint ett_pawned_templateCode = -1;
-static gint ett_pawned_equipmentCode = -1;
-static gint ett_pawned_channels = -1;
-static gint ett_pawned_users = -1;
-static gint ett_pawned_frames = -1;
-static gint ett_pawned_requests = -1;
 
 
 static guint32 dissect_pawned_request(proto_tree *pawned_tree, tvbuff_t *tvb, guint32 offset, int length)
@@ -402,7 +381,7 @@ static guint32 dissect_pawned_request(proto_tree *pawned_tree, tvbuff_t *tvb, gu
 		break;
 
 		default:
-			proto_tree_add_item(pawned_tree, hf_pawned, tvb, offset, length-offset, FALSE);
+			proto_tree_add_item(pawned_tree, hf_pawned_data, tvb, offset, length-offset, FALSE);
 			offset += length;
 		break;
 	}
@@ -521,7 +500,7 @@ static guint32 dissect_pawned_response(proto_tree *pawned_tree, tvbuff_t *tvb, g
 		break;
 
 		default:
-			proto_tree_add_item(pawned_tree, hf_pawned, tvb, offset, length-offset, FALSE);
+			proto_tree_add_item(pawned_tree, hf_pawned_data, tvb, offset, length-offset, FALSE);
 			offset += length;
 		break;
 	}
@@ -598,8 +577,8 @@ void proto_register_pawned(void)
 	* {&(field id), {name, abbrev, type, display, strings, bitmask, blurb, HFILL}}.
 	*/
 	static hf_register_info hf[] = {
-		{ &hf_pawned,
-			{ "Data", "pawned.data", FT_NONE, BASE_NONE, NULL, 0x0, "Pawned Data", HFILL }
+		{ &hf_pawned_data,
+			{ "Unknown Data", "pawned.data", FT_NONE, BASE_NONE, NULL, 0x0, "Unknown Data", HFILL }
 		},
 		{ &hf_pawned_action,
 			{ "Action", "pawned.action", FT_UINT8, BASE_DEC, VALS(PacketActionNames), 0x0, "Action ID", HFILL }
@@ -666,31 +645,10 @@ void proto_register_pawned(void)
 		}
 	};
 	static gint *ett[] = {
-		&ett_pawned,
-		&ett_pawned_action,
-		&ett_pawned_result,
-		&ett_pawned_room,
-		&ett_pawned_user,
-		&ett_pawned_userCount,
-		&ett_pawned_slot,
-		&ett_pawned_slotCount,
-		&ett_pawned_slotTarget,
-		&ett_pawned_roomString,
-		&ett_pawned_userString,
-		&ett_pawned_passString,
-		&ett_pawned_dataString,
-		&ett_pawned_messageString,
-		&ett_pawned_commentString,
-		&ett_pawned_skillCode,
-		&ett_pawned_templateCode,
-		&ett_pawned_equipmentCode,
-		&ett_pawned_channels,
-		&ett_pawned_users,
-		&ett_pawned_frames,
-		&ett_pawned_requests
+		&ett_pawned
 	};
 
-	proto_pawned = proto_register_protocol("Pawned Protocol", PROTO_TAG_PAWNED, "pawned");
+	proto_pawned = proto_register_protocol("pawned Protocol", PROTO_TAG_PAWNED, "pawned");
 	proto_register_field_array(proto_pawned, hf, array_length (hf));
 	proto_register_subtree_array(ett, array_length (ett));
 
@@ -702,10 +660,10 @@ void proto_reg_handoff_pawned(void)
 	static int pawned_initialized = FALSE;
 	static dissector_handle_t pawned_handle;
 
-	if(!pawned_initialized)
+	if (!pawned_initialized)
 	{
-        pawned_handle = create_dissector_handle(dissect_pawned, proto_pawned);
-        pawned_initialized = TRUE;
+		pawned_handle = create_dissector_handle(dissect_pawned, proto_pawned);
+		pawned_initialized = TRUE;
 	}
 	else
 	{

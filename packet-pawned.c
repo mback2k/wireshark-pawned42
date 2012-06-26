@@ -134,7 +134,7 @@ static int proto_pawned = -1;
 * proto_register_field_array() in proto_register_pawned()
 */
 
-/** Kts attempt at defining the protocol */
+/** Defining the protocol */
 static gint hf_pawned_data = -1;
 static gint hf_pawned_action = -1;
 static gint hf_pawned_result = -1;

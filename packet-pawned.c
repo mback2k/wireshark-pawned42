@@ -299,7 +299,7 @@ static guint32 dissect_pawned_request(proto_tree *pawned_tree, tvbuff_t *tvb, gu
 			proto_tree_add_item(pawned_tree, hf_pawned_userString, tvb, offset, 32, FALSE);
 			offset += 32;
 
-			proto_tree_add_item(pawned_tree, hf_pawned_messageString, tvb, offset, 256, FALSE);
+			proto_tree_add_item(pawned_tree, hf_pawned_commentString, tvb, offset, 256, FALSE);
 			offset += 256;
 
 			proto_tree_add_item(pawned_tree, hf_pawned_dataString, tvb, offset, 32, FALSE);
@@ -355,7 +355,7 @@ static guint32 dissect_pawned_request(proto_tree *pawned_tree, tvbuff_t *tvb, gu
 			proto_tree_add_item(pawned_tree, hf_pawned_userString, tvb, offset, 32, FALSE);
 			offset += 32;
 
-			proto_tree_add_item(pawned_tree, hf_pawned_messageString, tvb, offset, 256, FALSE);
+			proto_tree_add_item(pawned_tree, hf_pawned_commentString, tvb, offset, 256, FALSE);
 			offset += 256;
 		break;
 
@@ -470,7 +470,7 @@ static guint32 dissect_pawned_response(proto_tree *pawned_tree, tvbuff_t *tvb, g
 			proto_tree_add_item(pawned_tree, hf_pawned_equipmentCode, tvb, offset, 17, FALSE);
 			offset += 17;
 
-			proto_tree_add_item(pawned_tree, hf_pawned_messageString, tvb, offset, 256, FALSE);
+			proto_tree_add_item(pawned_tree, hf_pawned_commentString, tvb, offset, 256, FALSE);
 			offset += 256;
 
 			proto_tree_add_item(pawned_tree, hf_pawned_dataString, tvb, offset, 32, FALSE);

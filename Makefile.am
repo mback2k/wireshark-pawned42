@@ -1,5 +1,5 @@
 # Makefile.am
-# Automake file for pawned plugin based upon AgentX plugin
+# Automake file for pawned42 plugin based upon AgentX plugin
 #
 # $Id: Makefile.am 25656 2008-07-02 01:44:30Z guy $
 #
@@ -32,7 +32,7 @@ endif
 
 plugindir = @plugindir@
 
-plugin_LTLIBRARIES = pawned.la
+plugin_LTLIBRARIES = pawned42.la
 pawned_la_SOURCES = \
 	plugin.c \
 	moduleinfo.h \
@@ -111,7 +111,7 @@ plugin.c: $(DISSECTOR_SRC) $(top_srcdir)/tools/make-dissector-reg \
 #	@rm -f $(distdir)/plugin.c
 
 CLEANFILES = \
-	pawned \
+	pawned42 \
 	*~
 
 MAINTAINERCLEANFILES = \

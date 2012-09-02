@@ -5,7 +5,7 @@
 #endif
 
 /* Name of package */
-#define PACKAGE "pawned"
+#define PACKAGE "pawned42"
 
 
 #ifdef VERSION

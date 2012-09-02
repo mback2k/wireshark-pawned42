@@ -3,7 +3,7 @@
 #
 
 # The name
-PACKAGE=pawned
+PACKAGE=pawned42
 
 # The version
 MODULE_VERSION_MAJOR=0

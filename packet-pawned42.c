@@ -51,6 +51,8 @@
 #define USER_SLOT_CHANGE_PET		22
 #define USER_SLOT_CHANGE_INFO		23
 #define USER_SLOT_CHANGE_DATA		24
+#define USER_SLOT_CHANGE_USER		25
+#define USER_SLOT_CHANGE_COMMENT	26
 
 #define USER_STAT					254
 #define USER_PING					255
@@ -76,6 +78,8 @@ static const value_string PacketActionNames[] = {
 	{ USER_SLOT_CHANGE_PET,			"USER_SLOT_CHANGE_PET"			},
 	{ USER_SLOT_CHANGE_INFO,		"USER_SLOT_CHANGE_INFO"			},
 	{ USER_SLOT_CHANGE_DATA,		"USER_SLOT_CHANGE_DATA"			},
+	{ USER_SLOT_CHANGE_USER,		"USER_SLOT_CHANGE_USER"			},
+	{ USER_SLOT_CHANGE_COMMENT,		"USER_SLOT_CHANGE_COMMENT"		},
 
 	{ USER_STAT,					"USER_STAT"						},
 	{ USER_PING,					"USER_PING"						},
@@ -109,6 +113,8 @@ static const value_guint PacketActionRequestLength[] = {
 	{ USER_SLOT_CHANGE_PET,			14		},
 	{ USER_SLOT_CHANGE_INFO,		294		},
 	{ USER_SLOT_CHANGE_DATA,		26		},
+	{ USER_SLOT_CHANGE_USER,		38		},
+	{ USER_SLOT_CHANGE_COMMENT,		262		},
 
 	{ USER_STAT,					5		},
 	{ USER_PING,					5		}
@@ -354,6 +360,28 @@ static guint32 dissect_pawned42_request(proto_tree *pawned42_tree, tvbuff_t *tvb
 
 			proto_tree_add_item(pawned42_tree, hf_pawned42_dataString, tvb, offset, 20, FALSE);
 			offset += 20;
+		break;
+
+		case USER_SLOT_CHANGE_USER:
+			proto_tree_add_item(pawned42_tree, hf_pawned42_room, tvb, offset, 4, TRUE);
+			offset += 4;
+
+			proto_tree_add_item(pawned42_tree, hf_pawned42_slot, tvb, offset, 1, FALSE);
+			offset += 1;
+
+			proto_tree_add_item(pawned42_tree, hf_pawned42_userString, tvb, offset, 32, FALSE);
+			offset += 32;
+		break;
+
+		case USER_SLOT_CHANGE_COMMENT:
+			proto_tree_add_item(pawned42_tree, hf_pawned42_room, tvb, offset, 4, TRUE);
+			offset += 4;
+
+			proto_tree_add_item(pawned42_tree, hf_pawned42_slot, tvb, offset, 1, FALSE);
+			offset += 1;
+
+			proto_tree_add_item(pawned42_tree, hf_pawned42_commentString, tvb, offset, 256, FALSE);
+			offset += 256;
 		break;
 
 		case USER_STAT:

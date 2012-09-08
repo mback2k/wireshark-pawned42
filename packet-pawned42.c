@@ -631,7 +631,7 @@ void proto_register_pawned42(void)
 			{ "Template String", "pawned42.templateCode", FT_STRING, BASE_NONE, NULL, 0x0, "Template", HFILL }
 		},
 		{ &hf_pawned42_petList,
-			{ "Equipment String", "pawned42.petList", FT_STRING, BASE_NONE, NULL, 0x0, "Pet", HFILL }
+			{ "Pet String", "pawned42.petList", FT_STRING, BASE_NONE, NULL, 0x0, "Pet", HFILL }
 		},
 		{ &hf_pawned42_channels,
 			{ "Channels", "pawned42.channels", FT_UINT32, BASE_DEC, NULL, 0x0, "Channel", HFILL }

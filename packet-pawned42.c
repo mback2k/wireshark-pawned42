@@ -173,8 +173,7 @@ static guint32 dissect_pawned42_request(proto_tree *pawned42_tree, tvbuff_t *tvb
 	guint8 action = tvb_get_guint8(tvb, offset);
 	offset += 1;
 
-	switch(action)
-	{
+	switch (action) {
 		case USER_ROOM_JOIN:
 			proto_tree_add_item(pawned42_tree, hf_pawned42_room, tvb, offset, 4, TRUE);
 			offset += 4;
@@ -409,8 +408,7 @@ static guint32 dissect_pawned42_response(proto_tree *pawned42_tree, tvbuff_t *tv
 	guint8 action = tvb_get_guint8(tvb, offset);
 	offset += 1;
 
-	switch(action)
-	{
+	switch (action) {
 		case USER_ROOM_JOIN:
 			proto_tree_add_item(pawned42_tree, hf_pawned42_room, tvb, offset, 4, TRUE);
 			offset += 4;
@@ -526,7 +524,7 @@ static guint get_pawned42_message_len(packet_info *pinfo, tvbuff_t *tvb, int off
 				return PacketActionResponseLength[i].guint;
 	}
 
-	return (guint)(tvb_length(tvb)-offset);
+	return (guint) tvb_length_remaining(tvb, offset);
 }
 
 
@@ -546,11 +544,11 @@ static void dissect_pawned42_struct(tvbuff_t *tvb, packet_info *pinfo, proto_tre
 
 	if (check_col(pinfo->cinfo, COL_INFO)) {
 		col_clear(pinfo->cinfo, COL_INFO);
-		col_add_fstr(pinfo->cinfo, COL_INFO, "%d > %d - %s %s", 
-			pinfo->srcport, 
-			pinfo->destport, 
-				(pinfo->match_port == pinfo->destport || TCP_PORT_PAWNED42 == pinfo->destport) ? "Request" : "Response", 
-				val_to_str(action, PacketActionNames, "Unknown Action: 0x%02x")
+		col_add_fstr(pinfo->cinfo, COL_INFO, "%d > %d - %s %s",
+			pinfo->srcport,
+			pinfo->destport,
+			(pinfo->match_port == pinfo->destport || TCP_PORT_PAWNED42 == pinfo->destport) ? "Request" : "Response",
+			val_to_str(action, PacketActionNames, "Unknown Action: 0x%02x")
 		);
 	}
 
@@ -647,8 +645,8 @@ void proto_register_pawned42(void)
 	};
 
 	proto_pawned42 = proto_register_protocol("pawned42 Protocol", PROTO_TAG_PAWNED42, "pawned42");
-	proto_register_field_array(proto_pawned42, hf, array_length (hf));
-	proto_register_subtree_array(ett, array_length (ett));
+	proto_register_field_array(proto_pawned42, hf, array_length(hf));
+	proto_register_subtree_array(ett, array_length(ett));
 
 	register_dissector("pawned42", dissect_pawned42, proto_pawned42);
 }
@@ -658,13 +656,10 @@ void proto_reg_handoff_pawned42(void)
 	static int pawned42_initialized = FALSE;
 	static dissector_handle_t pawned42_handle;
 
-	if (!pawned42_initialized)
-	{
+	if (!pawned42_initialized) {
 		pawned42_handle = create_dissector_handle(dissect_pawned42, proto_pawned42);
 		pawned42_initialized = TRUE;
-	}
-	else
-	{
+	} else {
 		dissector_delete_uint("tcp.port", TCP_PORT_PAWNED42, pawned42_handle);
 	}
 
